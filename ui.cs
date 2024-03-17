@@ -1,43 +1,46 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
  
-public class Player : MonoBehaviour
+public class UI : MonoBehaviour
 {
-    public static List<Square> squares;
+	static UI singleton;
  
-    public static int score = 0;
+	public Text scoreText;
+	public GameObject panel;
+	public Text panelScoreText;
+	public Text defeatText;
+	public Text victoryText;
  
-    void Awake()
-    {
-        squares = new List<Square>();
-    }
+	void Awake()
+	{
+		singleton = this;
+	}
  
-    void Update()
-    {
-        if (squares.Count == 0)
-        {
-            Victory();
-        }
-    }
  
-    public static void Defeat()
-    {
-        score = 0;
-        UI.ShowDefeatPanel();
-    }
+	void Update()
+	{
+		scoreText.text = Player.score.ToString();
+	}
  
-    public static void Victory()
-    {
-        UI.ShowVictoryPanel();
-    }
+	public static void ShowVictoryPanel()
+	{
+		singleton.panel.SetActive(true);
+		singleton.victoryText.gameObject.SetActive(true);
+		singleton.panelScoreText.text = Player.score.ToString();
+	}
  
-    public static void Restart()
-    {
-        int index = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(index);
-    }
+	public static void ShowDefeatPanel()
+	{
+		singleton.panel.SetActive(true);
+		singleton.defeatText.gameObject.SetActive(true);
+		singleton.panelScoreText.text = Player.score.ToString();
+	}
  
+	public void OnClickRestart()
+	{
+		Player.Restart();
+	}
 }
+ 
