@@ -1,76 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
  
-public class Square : MonoBehaviour
+public class Player : MonoBehaviour
 {
-   public Vector2 targetPosition;
-   public float moveStep;
-    public bool isTrap;
-    public float speedFactor;
-    public float scaleFactor;
-    public int catchCount;
+    public static List<Square> squares;
  
-    void Start()
+    public static int score = 0;
+ 
+    void Awake()
     {
-        if (isTrap == false)
-        {
-            Player.squares.Add(this);
-        }
- 
-        targetPosition = GetRandomPoint();
+        squares = new List<Square>();
     }
  
     void Update()
     {
-        transform.position = Vector2.MoveTowards(transform.position,
-            targetPosition, moveStep * Time.deltaTime);
- 
- 
-        if((Vector2)transform.position == targetPosition)
+        if (squares.Count == 0)
         {
-            targetPosition = GetRandomPoint();
+            Victory();
         }
     }
  
-    Vector2 GetRandomPoint()
+    public static void Defeat()
     {
-        Vector2 randomVector = new Vector2();
- 
-        randomVector.x = Random.Range(-6, 6);
-        randomVector.y = Random.Range(-3, 3);
- 
-        return randomVector;
+        score = 0;
+        UI.ShowDefeatPanel();
     }
  
-    void OnMouseDown()
+    public static void Victory()
     {
-        if (isTrap)
-        {
-            Player.Defeat();
-        }
-        else
-        {
-            Catch();
-        }
+        UI.ShowVictoryPanel();
     }
  
-    void Catch()
+    public static void Restart()
     {
-        Player.score++;
-        catchCount--;
- 
-        if (catchCount == 0)
-        {
-            Player.squares.Remove(this);
-            Destroy(gameObject);
-        }
-        else
-        {
-            moveStep += speedFactor;
-            transform.localScale = (Vector2)transform.localScale - new Vector2(scaleFactor, scaleFactor);
-            transform.position = GetRandomPoint();
-        }
+        int index = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(index);
     }
  
 }
